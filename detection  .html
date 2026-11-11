@@ -1,0 +1,29 @@
+import pandas as pd
+
+# Charger les données nettoyées
+df = pd.read_csv("data/solar_data_clean.csv")
+
+# Calculer la production moyenne
+production_moyenne = df["production_kwh"].mean()
+
+# Calculer l'écart-type
+ecart_type = df["production_kwh"].std()
+
+# Définir un seuil de détection
+seuil = production_moyenne - 2 * ecart_type
+
+# Détecter les anomalies
+df["anomalie"] = df["production_kwh"] < seuil
+
+# Afficher les résultats
+print("Production moyenne :", round(production_moyenne, 2))
+print("\nAnomalies détectées :")
+
+print(df[df["anomalie"]][
+    ["date", "temperature_c", "production_kwh", "anomalie"]
+])
+
+# Enregistrer les résultats
+df.to_csv("data/solar_anomalies.csv", index=False)
+
+print("\nDétection terminée avec succès !")
